@@ -1,0 +1,391 @@
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/urls.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/urls.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Login page accessed
+Not Found: /home/
+Register page accessed
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Not Found: /favicon.ico
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Watching for file changes with StatReloader
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Register page accessed
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /favicon.ico
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Register page accessed
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Watching for file changes with StatReloader
+Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py", line 136, in dashboard
+    if not request.user.is_authenticated:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+    ~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+                    ~~~~~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ~~~~~~~~^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+                           ~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/__init__.py", line 328, in get_user
+    user = backend.get_user(user_id)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/backends.py", line 232, in get_user
+    user = UserModel._default_manager.get(pk=user_id)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 635, in get
+    num = len(clone)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/models.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/models.py changed, reloading.
+Watching for file changes with StatReloader
+Register page accessed
+Register page accessed
+Register page accessed
+Internal Server Error: /dashboard/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py", line 136, in dashboard
+    if not request.user.is_authenticated:
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/functional.py", line 251, in inner
+    self._setup()
+    ~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/functional.py", line 404, in _setup
+    self._wrapped = self._setupfunc()
+                    ~~~~~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/middleware.py", line 40, in <lambda>
+    request.user = SimpleLazyObject(lambda: get_user(request))
+                                            ~~~~~~~~^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/middleware.py", line 20, in get_user
+    request._cached_user = auth.get_user(request)
+                           ~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/__init__.py", line 328, in get_user
+    user = backend.get_user(user_id)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/backends.py", line 232, in get_user
+    user = UserModel._default_manager.get(pk=user_id)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 635, in get
+    num = len(clone)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Internal Server Error: /login/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedColumn: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py", line 111, in login_view
+    user = authenticate(
+        request,
+        username=username,
+        password=request.POST.get("password")
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/views/decorators/debug.py", line 75, in sensitive_variables_wrapper
+    return func(*func_args, **func_kwargs)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/__init__.py", line 114, in authenticate
+    user = backend.authenticate(request, **credentials)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/backends.py", line 65, in authenticate
+    user = UserModel._default_manager.get_by_natural_key(username)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/contrib/auth/base_user.py", line 37, in get_by_natural_key
+    return self.get(**{self.model.USERNAME_FIELD: username})
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 635, in get
+    num = len(clone)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 372, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 2000, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 95, in __iter__
+    results = compiler.execute_sql(
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1624, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: column Users_details.address does not exist
+LINE 1: ...ils"."home_phone_number", "Users_details"."bike", "Users_det...
+                                                             ^
+
+Watching for file changes with StatReloader
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Not Found: /favicon.ico
+Dashboard accessed by raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Login page accessed
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Not Found: /favicon.ico
+Dashboard accessed by raja

@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+
+            background-image: url("{% static 'images/Gurka-red.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            text-align: center;
+            /* background: rgba(255, 255, 255, 0.8); */
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom :215px;
+            margin-left:65px;
+            transform:rotate(-5deg);
+        }
+
+        button {
+            padding: 4px 8px;
+            margin: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Welcome to Agriculture Portal</h1>
+
+        <a href="{% url 'login' %}">
+            <button><b>LOGIN</b></button>
+        </a>
+
+        <a href="{% url 'register' %}">
+            <button><b>REGISTER</b></button>
+        </a>
+    </div>
+
+</body>
+</html>

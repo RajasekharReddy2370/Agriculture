@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agriculture Dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 70px;
+            z-index: 1000;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .new-field {
+            background-color: green;
+            color: white;
+        }
+
+        .update-field {
+            background-color: orange;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="controls">
+
+    <button class="new-field" onclick="markNewField()">
+        Mark New Field
+    </button>
+
+    <button class="update-field" onclick="updateOldField()">
+        Update Old Field
+    </button>
+
+</div>
+
+<div id="map"></div>
+
+<script>
+
+    // Street Layer
+    var street = L.tileLayer(
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+            attribution: '&copy; OpenStreetMap'
+        }
+    );
+
+    // Satellite Layer
+    var satellite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        {
+            attribution: 'Esri World Imagery'
+        }
+    );
+
+    // Map Initialization
+    var map = L.map('map', {
+        center: [17.3850, 78.4867],   // Hyderabad
+        zoom: 14,
+        layers: [satellite]
+    });
+
+    // Layer Control
+    var baseMaps = {
+        "Satellite": satellite,
+        "Street": street
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+
+    var currentMarker = null;
+
+    function markNewField() {
+
+        alert("Click on map to mark a field");
+
+        map.once('click', function(e) {
+
+            if(currentMarker){
+                map.removeLayer(currentMarker);
+            }
+
+            currentMarker = L.marker(
+                [e.latlng.lat, e.latlng.lng]
+            ).addTo(map);
+
+            currentMarker.bindPopup(
+                "Latitude: " +
+                e.latlng.lat.toFixed(6) +
+                "<br>Longitude: " +
+                e.latlng.lng.toFixed(6)
+            ).openPopup();
+
+            console.log(
+                "Latitude:",
+                e.latlng.lat,
+                "Longitude:",
+                e.latlng.lng
+            );
+
+            // Future API call here
+            // saveField(e.latlng.lat, e.latlng.lng)
+        });
+
+    }
+
+    function updateOldField() {
+
+        alert("Load existing field from database");
+
+        // Future:
+        // Fetch field from Django API
+        // Display marker/polygon
+        // Allow editing
+
+    }
+
+</script>
+
+</body>
+</html>

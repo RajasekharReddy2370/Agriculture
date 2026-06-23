@@ -1,0 +1,158 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            /* background-image: url("{% static 'images/sunset.jpg' %}"); */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 450px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            margin-right:1100px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom:10px
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-radius:20px
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <h2>User Registration</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label><b>Username</b></label>
+        <input type="text" name="username" placeholder="Enter Username" required>
+
+        <label><b>First Name</b></label>
+        <input type="text" name="firstname" placeholder="Enter First Name" required>
+
+        <label><b>Last Name</b></label>
+        <input type="text" name="lastname" placeholder="Enter Last Name">
+
+        <label><b>Nickname</b></label>
+        <input type="text" name="nickname" placeholder="Enter Nickname">
+
+        <label><b>Email</b></label>
+        <input type="email" name="email" placeholder="Enter Email">
+
+        <label><b>Personal Phone Number</b></label>
+        <input type="text" name="personal_phone_number" placeholder="Enter Personal Phone Number" required>
+
+        <label><b>Home Phone Number</b></label>
+        <input type="text" name="home_phone_number" placeholder="Enter Home Phone Number">
+
+        <label><b>Bike</b></label>
+        <input type="text" name="bike" placeholder="Enter Bike Details">
+
+        <label><b>Address</b></label>
+        <textarea name="address" placeholder="Enter Address" rows="3"></textarea>
+
+        <label><b>Designation</b></label>
+        <select name="designation" required>
+            <option value="">Select Designation</option>
+
+            {% for d in designations %}
+                <option value="{{ d.id }}">{{ d.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label><b>Profile Picture</b></label>
+        <input type="file" name="profilepic" accept="image/*">
+
+        <label><b>Password</b></label>
+        <input type="password" name="password" placeholder="Enter Password" required>
+
+        <label><b>Confirm Password</b></label>
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <br><br>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div class="login-link">
+        <a href="{% url 'login' %}">
+            Already have an account? Login
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
