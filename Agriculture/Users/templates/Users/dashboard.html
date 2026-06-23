@@ -1,151 +1,1182 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Agriculture Dashboard</title>
 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Leaflet -->
     <link rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+    <!-- Leaflet Draw -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
     <style>
 
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
         }
 
-        #map {
-            width: 100%;
-            height: 100vh;
+        body{
+            font-family:Arial, sans-serif;
+            overflow:hidden;
         }
 
-        .controls {
-            position: absolute;
-            top: 10px;
-            left: 70px;
-            z-index: 1000;
+        #map{
+            width:100%;
+            height:100vh;
         }
 
-        button {
-            padding: 10px 20px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
+        /* Top Panel */
+
+        .top-panel{
+
+            position:absolute;
+            top:15px;
+            left:70px;
+
+            z-index:1000;
+
+            background:white;
+
+            padding:15px;
+
+            border-radius:15px;
+
+            box-shadow:0 0 15px rgba(0,0,0,0.3);
         }
 
-        .new-field {
-            background-color: green;
-            color: white;
+        .top-panel input{
+
+            width:250px;
+
+            padding:10px;
+
+            border-radius:20px;
+
+            border:1px solid #ccc;
+
+            outline:none;
         }
 
-        .update-field {
-            background-color: orange;
-            color: white;
+        .top-panel button{
+
+            padding:10px 20px;
+
+            border:none;
+
+            border-radius:20px;
+
+            cursor:pointer;
+
+            font-weight:bold;
+
+            margin-left:5px;
+        }
+
+        .search-btn{
+            background:#007bff;
+            color:white;
+        }
+
+        .location-btn{
+            background:green;
+            color:white;
+        }
+
+        .logout-btn{
+            background:red;
+            color:white;
+        }
+
+        .create-btn{
+            background:#28a745;
+            color:white;
+        }
+
+        .update-btn{
+            background:#ff9800;
+            color:white;
+        }
+
+        /* Search Results */
+
+        .search-results{
+
+            position:absolute;
+
+            top:95px;
+
+            left:70px;
+
+            width:350px;
+
+            max-height:300px;
+
+            overflow-y:auto;
+
+            background:white;
+
+            z-index:1000;
+
+            border-radius:10px;
+
+            box-shadow:0 0 15px rgba(0,0,0,0.3);
+
+            display:none;
+        }
+
+        .search-item{
+
+            padding:12px;
+
+            border-bottom:1px solid #ddd;
+
+            cursor:pointer;
+        }
+
+        .search-item:hover{
+
+            background:#f1f1f1;
+        }
+
+        /* Info Box */
+
+        .info-box{
+
+            position:absolute;
+
+            bottom:20px;
+
+            left:20px;
+
+            z-index:1000;
+
+            background:white;
+
+            padding:10px;
+
+            border-radius:10px;
+
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
         }
 
     </style>
+
 </head>
+
 <body>
 
-<div class="controls">
+<div class="top-panel">
 
-    <button class="new-field" onclick="markNewField()">
+    <input
+            type="text"
+            id="searchField"
+            placeholder="Search Field Name">
+
+    <button
+            class="search-btn"
+            onclick="searchField()">
+        Search
+    </button>
+
+    {% if can_edit %}
+
+    <button
+            class="create-btn"
+            onclick="enableDrawing()">
         Mark New Field
     </button>
 
-    <button class="update-field" onclick="updateOldField()">
-        Update Old Field
+    <button
+            class="update-btn"
+            onclick="enableEditing()">
+        Update Field
     </button>
 
+    {% endif %}
+
+    <button
+            class="location-btn"
+            onclick="getCurrentLocation()">
+        My Location
+    </button>
+
+    <a href="{% url 'logout' %}">
+        <button class="logout-btn">
+            Logout
+        </button>
+    </a>
+
+</div>
+
+<div
+        id="searchResults"
+        class="search-results">
 </div>
 
 <div id="map"></div>
 
+<div class="info-box">
+
+    <b>User:</b> {{ request.user.username }}
+    <br>
+
+    <b>Role:</b>
+    {{ request.user.designation.name }}
+
+</div>
+
 <script>
 
-    // Street Layer
-    var street = L.tileLayer(
+    let map;
+
+    let drawnItems;
+
+    let drawControl;
+
+    let editablePolygon = null;
+
+    let selectedFieldId = null;
+
+    let allFields = [];
+
+    let currentLocationMarker = null;
+
+
+    // =========================
+    // Base Layers
+    // =========================
+
+    var streetLayer = L.tileLayer(
         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
             attribution: '&copy; OpenStreetMap'
         }
     );
 
-    // Satellite Layer
-    var satellite = L.tileLayer(
+    var satelliteLayer = L.tileLayer(
         'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         {
             attribution: 'Esri World Imagery'
         }
     );
 
-    // Map Initialization
-    var map = L.map('map', {
-        center: [17.3850, 78.4867],   // Hyderabad
-        zoom: 14,
-        layers: [satellite]
+    var labelsLayer = L.tileLayer(
+        'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+        {
+            attribution: 'Esri Labels'
+        }
+    );
+
+    var satelliteWithLabels = L.layerGroup([
+        satelliteLayer,
+        labelsLayer
+    ]);
+
+    // =========================
+    // Initialize Map
+    // =========================
+
+    map = L.map('map', {
+
+        center: [16.254846, 79.916159],
+
+        zoom: 16,
+
+        layers: [satelliteWithLabels]
+
     });
 
+    // =========================
     // Layer Control
+    // =========================
+
     var baseMaps = {
-        "Satellite": satellite,
-        "Street": street
+
+        "Satellite": satelliteWithLabels,
+
+        "Street": streetLayer
+
     };
 
-    L.control.layers(baseMaps).addTo(map);
+    L.control.layers(
+        baseMaps
+    ).addTo(map);
 
-    var currentMarker = null;
+    // =========================
+    // Polygon Layer
+    // =========================
 
-    function markNewField() {
+    drawnItems = new L.FeatureGroup();
 
-        alert("Click on map to mark a field");
+    map.addLayer(
+        drawnItems
+    );
 
-        map.once('click', function(e) {
+    // =========================
+    // Draw Control
+    // =========================
 
-            if(currentMarker){
-                map.removeLayer(currentMarker);
-            }
+    drawControl = new L.Control.Draw({
 
-            currentMarker = L.marker(
-                [e.latlng.lat, e.latlng.lng]
-            ).addTo(map);
+        draw: {
 
-            currentMarker.bindPopup(
-                "Latitude: " +
-                e.latlng.lat.toFixed(6) +
-                "<br>Longitude: " +
-                e.latlng.lng.toFixed(6)
-            ).openPopup();
+            polygon: true,
 
-            console.log(
-                "Latitude:",
-                e.latlng.lat,
-                "Longitude:",
-                e.latlng.lng
+            rectangle: false,
+
+            marker: false,
+
+            circle: false,
+
+            circlemarker: false,
+
+            polyline: false
+
+        },
+
+        edit: {
+
+            featureGroup: drawnItems
+
+        }
+
+    });
+
+    {% if can_edit %}
+
+    map.addControl(
+        drawControl
+    );
+
+    {% endif %}
+
+    // =========================
+    // Current Location
+    // =========================
+
+    function getCurrentLocation() {
+
+        if (!navigator.geolocation) {
+
+            alert(
+                "Geolocation not supported"
             );
 
-            // Future API call here
-            // saveField(e.latlng.lat, e.latlng.lng)
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+                let lat =
+                    position.coords.latitude;
+
+                let lng =
+                    position.coords.longitude;
+
+                map.setView(
+                    [lat, lng],
+                    18
+                );
+
+                if (
+                    currentLocationMarker
+                ) {
+
+                    map.removeLayer(
+                        currentLocationMarker
+                    );
+                }
+
+                currentLocationMarker =
+                    L.marker([lat, lng])
+                    .addTo(map)
+                    .bindPopup(
+                        "<b>Current Location</b>"
+                    );
+
+            },
+
+            function(error) {
+
+                console.log(
+                    error
+                );
+
+            }
+
+        );
+
+    }
+
+    // =========================
+    // Load Current Location
+    // =========================
+
+    getCurrentLocation();
+
+    // =========================
+    // Draw Existing Polygon
+    // =========================
+
+    function drawPolygon(field) {
+
+        let polygon =
+            L.polygon(
+                field.coordinates,
+                {
+                    weight: 2
+                }
+            );
+
+        polygon.fieldId =
+            field.field_id;
+
+        polygon.fieldName =
+            field.field_name;
+
+        polygon.bindPopup(
+            "<b>" +
+            field.field_name +
+            "</b>"
+        );
+
+        drawnItems.addLayer(
+            polygon
+        );
+
+        return polygon;
+    }
+
+    // =========================
+    // Load All Fields
+    // =========================
+
+    async function loadAllFields() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/maps/get-fields/"
+                );
+
+            const result =
+                await response.json();
+
+            if (
+                !result.success
+            ) {
+                return;
+            }
+
+            allFields =
+                result.data;
+
+            drawnItems.clearLayers();
+
+            result.data.forEach(
+                function(field) {
+
+                    drawPolygon(
+                        field
+                    );
+
+                }
+            );
+
+        }
+
+        catch(error) {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+    // Initial Load
+
+    loadAllFields();
+
+
+    // =========================
+    // Search Field
+    // =========================
+
+    async function searchField() {
+
+        let searchValue =
+            document
+            .getElementById(
+                "searchField"
+            )
+            .value
+            .trim();
+
+        if (!searchValue) {
+
+            document
+            .getElementById(
+                "searchResults"
+            )
+            .style.display =
+                "none";
+
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+
+                    "/maps/search-field/?field_name=" +
+                    encodeURIComponent(
+                        searchValue
+                    )
+
+                );
+
+            const result =
+                await response.json();
+
+            let searchResultsDiv =
+                document.getElementById(
+                    "searchResults"
+                );
+
+            searchResultsDiv.innerHTML =
+                "";
+
+            if (
+                !result.success ||
+                result.data.length === 0
+            ) {
+
+                searchResultsDiv.innerHTML =
+                    `
+                    <div class="search-item">
+                        No Fields Found
+                    </div>
+                    `;
+
+                searchResultsDiv.style.display =
+                    "block";
+
+                return;
+            }
+
+            result.data.forEach(
+
+                function(field) {
+
+                    let div =
+                        document.createElement(
+                            "div"
+                        );
+
+                    div.className =
+                        "search-item";
+
+                    div.innerHTML =
+                        "<b>" +
+                        field.field_name +
+                        "</b>";
+
+                    div.onclick =
+                        function() {
+
+                            zoomToField(
+                                field
+                            );
+
+                            searchResultsDiv.style.display =
+                                "none";
+                        };
+
+                    searchResultsDiv.appendChild(
+                        div
+                    );
+
+                }
+
+            );
+
+            searchResultsDiv.style.display =
+                "block";
+
+        }
+
+        catch(error) {
+
+            console.log(
+                error
+            );
+
+        }
+
+    }
+
+    // =========================
+    // Search While Typing
+    // =========================
+
+    document
+    .getElementById(
+        "searchField"
+    )
+    .addEventListener(
+
+        "keyup",
+
+        function() {
+
+            searchField();
+
+        }
+
+    );
+
+    // =========================
+    // Zoom To Selected Field
+    // =========================
+
+    function zoomToField(field) {
+
+        drawnItems.clearLayers();
+
+        let polygon =
+            L.polygon(
+                field.coordinates,
+                {
+                    color: "red",
+                    weight: 3
+                }
+            );
+
+        polygon.fieldId =
+            field.field_id;
+
+        polygon.fieldName =
+            field.field_name;
+
+        polygon.bindPopup(
+
+            "<b>" +
+            field.field_name +
+            "</b>"
+
+        );
+
+        polygon.addTo(
+            drawnItems
+        );
+
+        map.fitBounds(
+            polygon.getBounds()
+        );
+
+        polygon.openPopup();
+
+        selectedFieldId =
+            field.field_id;
+
+        editablePolygon =
+            polygon;
+
+    }
+
+    // =========================
+    // Hide Search Result
+    // =========================
+
+    map.on(
+
+        "click",
+
+        function() {
+
+            document
+            .getElementById(
+                "searchResults"
+            )
+            .style.display =
+                "none";
+
+        }
+
+    );
+
+    // =========================
+    // Reload All Fields Button
+    // =========================
+
+    function reloadFields() {
+
+        selectedFieldId = null;
+
+        editablePolygon = null;
+
+        loadAllFields();
+
+    }
+
+
+    // =========================
+    // Create New Field
+    // =========================
+
+    {% if can_edit %}
+
+        map.on(
+
+            L.Draw.Event.CREATED,
+
+            async function(event) {
+
+                let layer =
+                    event.layer;
+
+                let fieldName =
+                    prompt(
+                        "Enter Field Name"
+                    );
+
+                if (!fieldName) {
+
+                    alert(
+                        "Field Name is required"
+                    );
+
+                    return;
+                }
+
+                let coordinates = [];
+
+                let latlngs =
+                    layer.getLatLngs()[0];
+
+                latlngs.forEach(
+
+                    function(point) {
+
+                        coordinates.push([
+                            point.lat,
+                            point.lng
+                        ]);
+
+                    }
+
+                );
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/maps/save-field/",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+
+                                    field_name:
+                                        fieldName,
+
+                                    coordinates:
+                                        coordinates
+
+                                })
+
+                            }
+                        );
+
+                    const result =
+                        await response.json();
+
+                    if (
+                        result.success
+                    ) {
+
+                        alert(
+                            "Field Saved Successfully"
+                        );
+
+                        loadAllFields();
+
+                    }
+
+                    else {
+
+                        alert(
+                            result.message
+                        );
+
+                    }
+
+                }
+
+                catch(error) {
+
+                    console.log(
+                        error
+                    );
+
+                    alert(
+                        "Unable to save field"
+                    );
+
+                }
+
+            }
+
+        );
+
+    {% endif %}
+
+    // =========================
+    // Enable Drawing
+    // =========================
+
+    function enableDrawing() {
+
+        alert(
+
+            "Draw the field boundary on the map"
+
+        );
+
+    }
+
+
+    // =========================
+    // Enable Edit Mode
+    // =========================
+
+    {% if can_edit %}
+
+    function enableEditing() {
+
+        if (!editablePolygon) {
+
+            alert(
+                "Search and select a field first"
+            );
+
+            return;
+        }
+
+        alert(
+            "You can now drag polygon points and update the field"
+        );
+
+    }
+
+    // =========================
+    // Polygon Edited
+    // =========================
+
+    map.on(
+
+        L.Draw.Event.EDITED,
+
+        async function(event) {
+
+            let layers =
+                event.layers;
+
+            layers.eachLayer(
+
+                async function(layer) {
+
+                    if (
+                        !layer.fieldId
+                    ) {
+                        return;
+                    }
+
+                    let coordinates = [];
+
+                    let latlngs =
+                        layer.getLatLngs()[0];
+
+                    latlngs.forEach(
+
+                        function(point) {
+
+                            coordinates.push([
+                                point.lat,
+                                point.lng
+                            ]);
+
+                        }
+
+                    );
+
+                    try {
+
+                        const response =
+                            await fetch(
+
+                                "/maps/update-field/" +
+                                layer.fieldId +
+                                "/",
+
+                                {
+
+                                    method: "POST",
+
+                                    headers: {
+
+                                        "Content-Type":
+                                            "application/json"
+
+                                    },
+
+                                    body: JSON.stringify({
+
+                                        field_name:
+                                            layer.fieldName,
+
+                                        coordinates:
+                                            coordinates
+
+                                    })
+
+                                }
+
+                            );
+
+                        const result =
+                            await response.json();
+
+                        if (
+                            result.success
+                        ) {
+
+                            alert(
+                                "Field Updated Successfully"
+                            );
+
+                            loadAllFields();
+
+                        }
+
+                        else {
+
+                            alert(
+                                result.message
+                            );
+
+                        }
+
+                    }
+
+                    catch(error) {
+
+                        console.log(
+                            error
+                        );
+
+                        alert(
+                            "Unable to update field"
+                        );
+
+                    }
+
+                }
+
+            );
+
+        }
+
+    );
+
+    {% endif %}
+
+    // =========================
+    // Click Polygon
+    // =========================
+
+    drawnItems.on(
+
+        "click",
+
+        function(event) {
+
+            let layer =
+                event.layer;
+
+            selectedFieldId =
+                layer.fieldId;
+
+            editablePolygon =
+                layer;
+
+            map.fitBounds(
+                layer.getBounds()
+            );
+
+            layer.openPopup();
+
+        }
+
+    );
+
+    // =========================
+    // Highlight Polygon
+    // =========================
+
+    function highlightPolygon(layer) {
+
+        drawnItems.eachLayer(
+
+            function(polygon) {
+
+                polygon.setStyle({
+
+                    color: "#3388ff",
+
+                    weight: 2
+
+                });
+
+            }
+
+        );
+
+        layer.setStyle({
+
+            color: "red",
+
+            weight: 4
+
         });
 
     }
 
-    function updateOldField() {
+    // =========================
+    // Click To Highlight
+    // =========================
 
-        alert("Load existing field from database");
+    drawnItems.on(
 
-        // Future:
-        // Fetch field from Django API
-        // Display marker/polygon
-        // Allow editing
+        "click",
+
+        function(event) {
+
+            highlightPolygon(
+                event.layer
+            );
+
+        }
+
+    );
+
+
+    // =========================
+    // Refresh All Fields
+    // =========================
+
+    function refreshFields() {
+
+        selectedFieldId = null;
+
+        editablePolygon = null;
+
+        drawnItems.clearLayers();
+
+        loadAllFields();
 
     }
+
+    // =========================
+    // ESC Key Clears Search
+    // =========================
+
+    document.addEventListener(
+
+        "keydown",
+
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                document.getElementById(
+                    "searchField"
+                ).value = "";
+
+                document.getElementById(
+                    "searchResults"
+                ).style.display = "none";
+
+                refreshFields();
+
+            }
+
+        }
+
+    );
+
+    // =========================
+    // Double Click Polygon
+    // Zoom To Polygon
+    // =========================
+
+    drawnItems.on(
+
+        "dblclick",
+
+        function(event) {
+
+            map.fitBounds(
+                event.layer.getBounds()
+            );
+
+        }
+
+    );
+
+    // =========================
+    // Initial Load
+    // =========================
+
+    window.onload = function() {
+
+        loadAllFields();
+
+        getCurrentLocation();
+
+    };
 
 </script>
 
 </body>
 </html>
+
+
+

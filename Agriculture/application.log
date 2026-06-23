@@ -389,3 +389,289 @@ Dashboard accessed by raja
 Dashboard accessed by raja
 Not Found: /favicon.ico
 Dashboard accessed by raja
+Watching for file changes with StatReloader
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Register page accessed
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+Invalid HTTP_HOST header: '192.168.1.6:8000'. You may need to add '192.168.1.6' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '192.168.1.6:8000'. You may need to add '192.168.1.6' to ALLOWED_HOSTS.
+Login page accessed
+Login page accessed
+Login attempt for username=raja
+Login successful for username=raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Dashboard accessed by raja
+Not Found: /favicon.ico
+Dashboard accessed by raja
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Agriculture/settings.py changed, reloading.
+Watching for file changes with StatReloader
+Forbidden (CSRF cookie not set.): /login/
+Login page accessed
+Not Found: /favicon.ico
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+Unauthorized: /login/
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Internal Server Error: /dashboard
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/utils/deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/middleware/common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/middleware/common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/dashboard/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+Not Found: /save-field/
+Watching for file changes with StatReloader
+Not Found: /save-field/
+Forbidden (CSRF token missing.): /maps/save-field/
+Watching for file changes with StatReloader
+Forbidden (CSRF token missing.): /maps/save-field/
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Forbidden (CSRF token missing.): /maps/save-field/
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Forbidden (CSRF token missing.): /maps/save-field/
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /maps/save-field/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py", line 28, in save_field
+    latitude=data["latitude"],
+             ~~~~^^^^^^^^^^^^
+KeyError: 'latitude'
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /maps/save-field/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+psycopg2.errors.UndefinedTable: relation "maps_field" does not exist
+LINE 1: INSERT INTO "maps_field" ("field_name", "coordinates", "crea...
+                    ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py", line 27, in save_field
+    field = Field.objects.create(
+        field_name=data["field_name"],
+        coordinates=data["coordinates"],
+        created_by=request.user
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 669, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/base.py", line 874, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/base.py", line 966, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, insert_fields, returning_fields, raw
+    )
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/base.py", line 1220, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/query.py", line 1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/models/sql/compiler.py", line 1925, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/utils.py", line 94, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.ProgrammingError: relation "maps_field" does not exist
+LINE 1: INSERT INTO "maps_field" ("field_name", "coordinates", "crea...
+                    ^
+
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /maps/update-field/1/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py", line 53, in update_field
+    field.latitude = data["latitude"]
+                     ~~~~^^^^^^^^^^^^
+KeyError: 'latitude'
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Internal Server Error: /maps/get-fields/
+Traceback (most recent call last):
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/rajasekharreddykasireddy/Environments/krrprojectenvir/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py", line 89, in get_fields
+    "latitude": field.latitude,
+                ^^^^^^^^^^^^^^
+AttributeError: 'Field' object has no attribute 'latitude'
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/maps/views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Method Not Allowed: /login/
+Method Not Allowed: /login/
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Method Not Allowed: /login/
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+/Users/rajasekharreddykasireddy/work/Agriculture/Agriculture/Users/views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json
+Not Found: /.well-known/appspecific/com.chrome.devtools.json

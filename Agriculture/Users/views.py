@@ -12,134 +12,152 @@ logger = logging.getLogger(__name__)
 def home(request):
     return render(request, "Users/home.html")
 
+@csrf_exempt
 def register(request):
 
-    logger.info("Register page accessed")
+    if request.method != "POST":
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "Method not allowed"
+            },
+            status=405
+        )
 
-    if request.method == "POST":
-
-        try:
-            username = request.POST.get("username")
-
-            logger.info(f"Registration request received for username={username}")
-
-            if Details.objects.filter(username=username).exists():
-                logger.warning(f"Username already exists: {username}")
-
-                return render(
-                    request,
-                    "Users/register.html",
-                    {
-                        "error": "Username already exists",
-                        "designations": Designation.objects.all()
-                    }
-                )
-
-            password = request.POST.get("password")
-            confirm_password = request.POST.get("confirm_password")
-
-            if password != confirm_password:
-                logger.warning(f"Password mismatch for username={username}")
-
-                return render(
-                    request,
-                    "Users/register.html",
-                    {
-                        "error": "Passwords do not match",
-                        "designations": Designation.objects.all()
-                    }
-                )
-
-            designation = Designation.objects.get(
-                id=request.POST.get("designation")
-            )
-
-            user = Details(
-                username=username,
-                firstname=request.POST.get("firstname"),
-                lastname=request.POST.get("lastname"),
-                nickname=request.POST.get("nickname"),
-                email=request.POST.get("email"),
-                personal_phone_number=request.POST.get("personal_phone_number"),
-                home_phone_number=request.POST.get("home_phone_number"),
-                bike=request.POST.get("bike"),
-                designation=designation
-            )
-
-            image = request.FILES.get("profilepic")
-
-            if image:
-                user.profilepic = image.read()
-                user.profilepic_content_type = image.content_type
-                logger.info(f"Profile picture uploaded for {username}")
-
-            user.set_password(password)
-            user.save()
-
-            logger.info(f"User registered successfully: {username}")
-
-            return redirect("login")
-
-        except Exception as e:
-            logger.exception(f"Registration failed: {str(e)}")
-
-            return render(
-                request,
-                "Users/register.html",
-                {
-                    "error": str(e),
-                    "designations": Designation.objects.all()
-                }
-            )
-
-    return render(
-        request,
-        "Users/register.html",
-        {"designations": Designation.objects.all()}
-    )
-
-def login_view(request):
-
-    logger.info("Login page accessed")
-
-    if request.method == "POST":
+    try:
 
         username = request.POST.get("username")
 
-        logger.info(f"Login attempt for username={username}")
+        if Details.objects.filter(username=username).exists():
 
-        user = authenticate(
-            request,
-            username=username,
-            password=request.POST.get("password")
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Username already exists"
+                },
+                status=400
+            )
+
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if password != confirm_password:
+
+            return JsonResponse(
+                {
+                    "success": False,
+                    "message": "Passwords do not match"
+                },
+                status=400
+            )
+
+        designation = Designation.objects.get(
+            id=request.POST.get("designation")
         )
 
-        if user:
-            login(request, user)
+        user = Details.objects.create(
+            username=username,
+            firstname=request.POST.get("firstname"),
+            lastname=request.POST.get("lastname"),
+            nickname=request.POST.get("nickname"),
+            email=request.POST.get("email"),
+            personal_phone_number=request.POST.get("personal_phone_number"),
+            home_phone_number=request.POST.get("home_phone_number"),
+            bike=request.POST.get("bike"),
+            designation=designation
+        )
 
-            logger.info(f"Login successful for username={username}")
+        user.set_password(password)
+        user.save()
 
-            return redirect("dashboard")
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "User registered successfully",
+                "data": {
+                    "id": user.id,
+                    "username": user.username,
+                    "designation": user.designation.name
+                }
+            }
+        )
 
-        logger.warning(f"Invalid login attempt for username={username}")
+    except Exception as e:
+
+        logger.exception(str(e))
+
+        return JsonResponse(
+            {
+                "success": False,
+                "message": str(e)
+            },
+            status=500
+        )
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def login_view(request):
+
+    if request.method == "GET":
+
+        return render(
+            request,
+            "Users/login.html"
+        )
+
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+
+    user = authenticate(
+        request,
+        username=username,
+        password=password
+    )
+
+    if not user:
 
         return render(
             request,
             "Users/login.html",
-            {"error": "Invalid credentials"}
+            {
+                "error": "Invalid credentials"
+            }
         )
 
-    return render(request, "Users/login.html")
+    login(request, user)
+
+    return redirect("dashboard")
+
+# def dashboard(request):
+
+#     if not request.user.is_authenticated:
+#         logger.warning("Unauthenticated user tried to access dashboard")
+#         return redirect("login")
+
+#     logger.info(f"Dashboard accessed by {request.user.username}")
+
+#     return render(request, "Users/dashboard.html")
 
 def dashboard(request):
 
     if not request.user.is_authenticated:
-        logger.warning("Unauthenticated user tried to access dashboard")
         return redirect("login")
 
-    logger.info(f"Dashboard accessed by {request.user.username}")
+    can_edit = (
+        request.user.designation and
+        request.user.designation.name in ["Admin", "VC"]
+    )
 
-    return render(request, "Users/dashboard.html")
+    return render(
+        request,
+        "Users/dashboard.html",
+        {
+            "can_edit": can_edit
+        }
+    )
 
 def logout_view(request):
 
