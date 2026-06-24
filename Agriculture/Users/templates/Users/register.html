@@ -1,158 +1,323 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Register</title>
+
+    <title>Register User</title>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            /* background-image: url("{% static 'images/sunset.jpg' %}"); */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
 
-            min-height: 100vh;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
         }
 
-        .container {
-            width: 450px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            margin-right:1100px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        body{
+
+            background:#000;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:center;
+
+            min-height:100vh;
+
+            padding:30px;
+
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom:10px
+        .container{
+
+            width:500px;
+
+            background:#111;
+
+            padding:35px;
+
+            border-radius:20px;
+
+            box-shadow:0 0 20px rgba(255,255,255,0.15);
+
         }
 
-        input,
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            box-sizing: border-box;
+        h2{
+
+            color:white;
+
+            text-align:center;
+
+            margin-bottom:25px;
+
         }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: green;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
+        label{
 
-        button:hover {
-            opacity: 0.9;
-        }
+            display:block;
 
-        .login-link {
-            text-align: center;
-            margin-top: 15px;
-        }
+            color:white;
 
-        .error {
-            color: red;
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
+            font-weight:bold;
+
+            margin-top:12px;
+
+            margin-bottom:5px;
+
         }
 
         input,
-        select {
-            margin-top: 0;
-            margin-bottom: 10px;
-            border-radius:20px
+        select{
+
+            width:100%;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:30px;
+
+            outline:none;
+
+            font-size:15px;
+
+            background:white;
+
         }
+
+        input[type="file"]{
+
+            padding:10px;
+
+            background:white;
+
+        }
+
+        .btn{
+
+            width:100%;
+
+            padding:14px;
+
+            margin-top:25px;
+
+            border:none;
+
+            border-radius:30px;
+
+            background:green;
+
+            color:white;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            cursor:pointer;
+
+        }
+
+        .btn:hover{
+
+            background:#0a8d0a;
+
+        }
+
+        .back{
+
+            display:block;
+
+            text-align:center;
+
+            margin-top:20px;
+
+            color:white;
+
+            text-decoration:none;
+
+            font-weight:bold;
+
+        }
+
+        .back:hover{
+
+            color:lightgreen;
+
+        }
+
+        .error{
+
+            color:red;
+
+            text-align:center;
+
+            font-weight:bold;
+
+            margin-bottom:15px;
+
+        }
+
     </style>
 
 </head>
+
 <body>
 
 <div class="container">
 
-    <h2>User Registration</h2>
+    <h2>Register User</h2>
 
     {% if error %}
-        <p class="error">{{ error }}</p>
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
     {% endif %}
 
-    <form method="POST" enctype="multipart/form-data">
+    <form
+            method="POST"
+            enctype="multipart/form-data">
+
         {% csrf_token %}
 
-        <label><b>Username</b></label>
-        <input type="text" name="username" placeholder="Enter Username" required>
+        <label>Username</label>
 
-        <label><b>First Name</b></label>
-        <input type="text" name="firstname" placeholder="Enter First Name" required>
+        <input
+                type="text"
+                name="username"
+                placeholder="Enter Username"
+                required>
 
-        <label><b>Last Name</b></label>
-        <input type="text" name="lastname" placeholder="Enter Last Name">
+        <label>First Name</label>
 
-        <label><b>Nickname</b></label>
-        <input type="text" name="nickname" placeholder="Enter Nickname">
+        <input
+                type="text"
+                name="firstname"
+                placeholder="Enter First Name"
+                required>
 
-        <label><b>Email</b></label>
-        <input type="email" name="email" placeholder="Enter Email">
+        <label>Last Name</label>
 
-        <label><b>Personal Phone Number</b></label>
-        <input type="text" name="personal_phone_number" placeholder="Enter Personal Phone Number" required>
+        <input
+                type="text"
+                name="lastname"
+                placeholder="Enter Last Name">
 
-        <label><b>Home Phone Number</b></label>
-        <input type="text" name="home_phone_number" placeholder="Enter Home Phone Number">
+        <label>Nickname</label>
 
-        <label><b>Bike</b></label>
-        <input type="text" name="bike" placeholder="Enter Bike Details">
+        <input
+                type="text"
+                name="nickname"
+                placeholder="Enter Nickname">
 
-        <label><b>Address</b></label>
-        <textarea name="address" placeholder="Enter Address" rows="3"></textarea>
+        <label>Email</label>
 
-        <label><b>Designation</b></label>
-        <select name="designation" required>
-            <option value="">Select Designation</option>
+        <input
+                type="email"
+                name="email"
+                placeholder="Enter Email">
+
+        <label>Personal Phone Number</label>
+
+        <input
+                type="text"
+                name="personal_phone_number"
+                placeholder="Enter Personal Phone Number"
+                required>
+
+        <label>Home Phone Number</label>
+
+        <input
+                type="text"
+                name="home_phone_number"
+                placeholder="Enter Home Phone Number">
+
+        <label>Bike</label>
+
+        <input
+                type="text"
+                name="bike"
+                placeholder="Enter Bike">
+
+        <label>Address</label>
+
+        <input
+                type="text"
+                name="address"
+                placeholder="Enter Address">
+
+        <label>Designation</label>
+
+        <select
+                name="designation"
+                required>
+
+            <option value="">
+
+                Select Designation
+
+            </option>
 
             {% for d in designations %}
-                <option value="{{ d.id }}">{{ d.name }}</option>
+
+            <option value="{{ d.id }}">
+
+                {{ d.name }}
+
+            </option>
+
             {% endfor %}
+
         </select>
 
-        <label><b>Profile Picture</b></label>
-        <input type="file" name="profilepic" accept="image/*">
+        <label>Profile Picture</label>
 
-        <label><b>Password</b></label>
-        <input type="password" name="password" placeholder="Enter Password" required>
+        <input
+                type="file"
+                name="profilepic"
+                accept="image/*">
 
-        <label><b>Confirm Password</b></label>
-        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        <label>Password</label>
 
-        <br><br>
+        <input
+                type="password"
+                name="password"
+                placeholder="Enter Password"
+                required>
 
-        <button type="submit">Register</button>
+        <label>Confirm Password</label>
+
+        <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm Password"
+                required>
+
+        <button
+                type="submit"
+                class="btn">
+
+            Register
+
+        </button>
 
     </form>
 
-    <div class="login-link">
-        <a href="{% url 'login' %}">
-            Already have an account? Login
-        </a>
-    </div>
+    <a
+       href="{% url 'options' %}"
+       class="back">
+
+        ← Back to Options
+
+    </a>
 
 </div>
 
 </body>
+
 </html>

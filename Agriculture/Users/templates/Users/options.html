@@ -1,11 +1,9 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html>
 
 <head>
 
-    <title>Agriculture Portal</title>
+    <title>Options</title>
 
     <style>
 
@@ -32,7 +30,7 @@
 
         .container{
 
-            width:400px;
+            width:450px;
 
             background:#111;
 
@@ -46,11 +44,21 @@
 
         }
 
-        h1{
+        h2{
 
             color:white;
 
-            margin-bottom:40px;
+            margin-bottom:15px;
+
+        }
+
+        h3{
+
+            color:#ddd;
+
+            margin-bottom:35px;
+
+            font-weight:normal;
 
         }
 
@@ -60,11 +68,11 @@
 
             padding:15px;
 
+            margin-top:15px;
+
             border:none;
 
             border-radius:30px;
-
-            background:green;
 
             color:white;
 
@@ -76,9 +84,27 @@
 
         }
 
+        .register{
+
+            background:#007bff;
+
+        }
+
+        .dashboard{
+
+            background:green;
+
+        }
+
+        .logout{
+
+            background:red;
+
+        }
+
         button:hover{
 
-            background:#0b8d0b;
+            opacity:0.9;
 
         }
 
@@ -90,13 +116,47 @@
 
 <div class="container">
 
-    <h1>Agriculture Portal</h1>
+    <h2>
 
-    <a href="{% url 'login' %}">
+        Welcome {{ request.user.username }}
 
-        <button>
+    </h2>
 
-            Login
+    <h3>
+
+        {{ request.user.designation.name }}
+
+    </h3>
+
+    {% if can_register %}
+
+    <a href="{% url 'register' %}">
+
+        <button class="register">
+
+            Register User
+
+        </button>
+
+    </a>
+
+    {% endif %}
+
+    <a href="{% url 'dashboard' %}">
+
+        <button class="dashboard">
+
+            Dashboard
+
+        </button>
+
+    </a>
+
+    <a href="{% url 'logout' %}">
+
+        <button class="logout">
+
+            Logout
 
         </button>
 

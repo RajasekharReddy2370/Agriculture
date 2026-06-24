@@ -7,18 +7,5 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("logout/", views.logout_view, name="logout"),
+    path("options/", views.options, name="options"),
 ]
-
-
-# {
-#     "username": "Raja",
-#     "firstname": "RajasekharReddy",
-#     "lastname": "Kasireddy",
-#     "nickname": "Raj",
-#     "email": "raja@gmail.com",
-#     "personal_phone_number": "2370",
-#     "home_phone_number": "2370",
-#     "bike": "BOXER",
-#     "designation_id": 2,
-#     "password": "2370"
-# }
