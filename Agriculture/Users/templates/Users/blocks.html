@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Block Layout - {{ field.field_name }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; }
+        body{ font-family:Arial, sans-serif; overflow:hidden; }
+        #map{ width:100%; height:100vh; }
+        
+        .top-panel {
+            position:absolute; top:15px; left:70px; z-index:1000;
+            background:white; padding:12px 20px; border-radius:15px;
+            box-shadow:0 0 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 15px;
+        }
+        .top-panel h3 { color:#333; font-size: 16px; }
+        .btn { padding:8px 15px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; text-decoration:none; font-size: 14px; }
+        .back-btn { background:#6c757d; color:white; }
+        .back-btn:hover { background:#5a6268; }
+    </style>
+</head>
+<body>
+
+<div class="top-panel">
+    <h3>Field: <b style="color: red;">{{ field.field_name }}</b> (Blocks Layout)</h3>
+    <a href="{% url 'dashboard' %}" class="btn back-btn">⬅ Back to Map</a>
+</div>
+
+<div id="map"></div>
+
+<script>
+    let map, blockGroup, drawControl;
+    
+    // Get parameters from Django backend context
+    const fieldId = "{{ field.id }}"; // Clean field database reference identification
+    const parentFieldCoordinates = {{ field.coordinates|safe }};
+
+    // Initialize Map with matching Satellite Imagery
+    var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+    var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}');
+    var satelliteWithLabels = L.layerGroup([satelliteLayer, labelsLayer]);
+
+    map = L.map('map', {
+        zoomControl: true,
+        layers: [satelliteWithLabels]
+    });
+
+    // 1. DRAW THE EXACT PARENT FIELD BOUNDARY (Red Dashed Line)
+    let parentPolygon = L.polygon(parentFieldCoordinates, {
+        color: "red",
+        weight: 3,
+        fillOpacity: 0.02,
+        dashArray: "6, 6"
+    }).addTo(map);
+
+    // 2. AUTOMATICALLY ZOOM AND FOCUS DIRECTLY ON IT
+    map.fitBounds(parentPolygon.getBounds());
+
+    // Group to hold your newly drawn blocks
+    blockGroup = new L.FeatureGroup().addTo(map);
+
+    // 3. FORCE LEAFLET DRAW TOOLBAR TO SHOW ON THE LEFT SIDE
+    drawControl = new L.Control.Draw({
+        position: 'topleft',
+        draw: {
+            polygon: {
+                allowIntersection: false, // Prevents overlapping messy shapes
+                shapeOptions: { color: '#ff9800', weight: 3, fillOpacity: 0.4 }
+            },
+            rectangle: true, // Allows quick square blocks too!
+            marker: false, circle: false, circlemarker: false, polyline: false
+        },
+        edit: {
+            featureGroup: blockGroup,
+            remove: true
+        }
+    });
+    map.addControl(drawControl);
+
+    // 4. LOAD EXISTING BLOCKS FROM DATABASE
+    async function loadBlocks() {
+        try {
+            const response = await fetch(`/maps/field/${fieldId}/get-blocks/`);
+            const result = await response.json();
+            if (!result.success) return;
+
+            blockGroup.clearLayers();
+            result.data.forEach(block => {
+                let poly = L.polygon(block.coordinates, { 
+                    color: "#ff9800", 
+                    weight: 2, 
+                    fillOpacity: 0.35 
+                });
+                poly.bindPopup(`<b>Block Name: ${block.block_name}</b>`);
+                poly.bindTooltip(block.block_name, { permanent: true, direction: "center", className: "block-tooltip" });
+                blockGroup.addLayer(poly);
+            });
+        } catch(e) { console.error("Error loading blocks:", e); }
+    }
+
+    // 5. CAPTURE & SAVE NEWLY DRAWN BLOCK SHAPES
+    map.on(L.Draw.Event.CREATED, async function(event) {
+        let layer = event.layer;
+        
+        // Prompt for the block identifier name
+        let blockName = prompt("Enter a Name/ID for this Block (e.g., Block A, Row 1):");
+        if (!blockName || blockName.trim() === "") {
+            return; // Cancelled
+        }
+
+        // Extract drawn polygon map positions
+        let coordinates = [];
+        let latlngs = layer.getLatLngs()[0];
+        latlngs.forEach(pt => coordinates.push([pt.lat, pt.lng]));
+
+        try {
+            const response = await fetch(`/maps/field/${fieldId}/save-block/`, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}" // Native security pass token
+                },
+                body: JSON.stringify({ 
+                    block_name: blockName, 
+                    coordinates: coordinates 
+                })
+            });
+            
+            const res = await response.json();
+            if(res.success) {
+                alert(`Saved "${blockName}" inside your field boundary successfully!`);
+                loadBlocks(); // Reload screen layouts
+            } else {
+                alert("Error: " + res.message);
+            }
+        } catch(e) { 
+            console.error(e);
+            alert("Failed to connect to server.");
+        }
+    });
+
+    // Run layout scan on window startup
+    window.onload = loadBlocks;
+</script>
+</body>
+</html>

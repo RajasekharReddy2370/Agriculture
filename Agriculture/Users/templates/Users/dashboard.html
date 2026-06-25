@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +8,6 @@
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
@@ -18,203 +16,105 @@
         body{ font-family:Arial, sans-serif; overflow:hidden; }
         #map{ width:100%; height:100vh; }
 
-        /* Top Panel */
-        .top-panel{
-            position:absolute; top:15px; left:70px; z-index:1000;
-            background:white; padding:15px; border-radius:15px;
-            box-shadow:0 0 15px rgba(0,0,0,0.3);
-        }
-        .top-panel input{
-            width:250px; padding:10px; border-radius:20px;
-            border:1px solid #ccc; outline:none;
-        }
-        .top-panel button{
-            padding:10px 20px; border:none; border-radius:20px;
-            cursor:pointer; font-weight:bold; margin-left:5px;
-        }
-
+        /* Panels & Interface UI components */
+        .top-panel{ position:absolute; top:15px; left:70px; z-index:1000; background:white; padding:15px; border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.3); }
+        .top-panel input, .top-panel select{ width:250px; padding:10px; border-radius:20px; border:1px solid #ccc; outline:none; }
+        .top-panel button{ padding:10px 20px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-left:5px; }
+        
         .search-btn{ background:#007bff; color:white; }
         .location-btn{ background:green; color:white; }
         .logout-btn{ background:red; color:white; }
         .create-btn{ background:#28a745; color:white; }
         .update-btn{ background:#ff9800; color:white; }
 
-        /* Search Results */
-        .search-results{
-            position:absolute; top:95px; left:70px; width:350px;
-            max-height:300px; overflow-y:auto; background:white;
-            z-index:1000; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.3);
-            display:none;
-        }
+        .search-results{ position:absolute; top:95px; left:70px; width:350px; max-height:300px; overflow-y:auto; background:white; z-index:1000; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.3); display:none; }
         .search-item{ padding:12px; border-bottom:1px solid #ddd; cursor:pointer; }
         .search-item:hover{ background:#f1f1f1; }
-
-        /* Info Box */
-        .info-box{
-            position:absolute; bottom:20px; left:20px; z-index:1000;
-            background:white; padding:10px; border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.2);
-        }
+        .info-box{ position:absolute; bottom:20px; left:20px; z-index:1000; background:white; padding:10px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.2); }
     </style>
 </head>
-
 <body>
 
 <div class="top-panel">
     <input type="text" id="searchField" placeholder="Search Field Name">
-    <select id="fieldDropdown">
-        <option value="">Select Field</option>
-    </select>
+    <select id="fieldDropdown"><option value="">Select Field</option></select>
     <button class="search-btn" onclick="searchField()">Search</button>
-
     {% if can_edit %}
     <button class="create-btn" onclick="enableDrawing()">Mark New Field</button>
     <button class="update-btn" onclick="enableEditing()">Update Field</button>
     {% endif %}
-
     <button class="location-btn" onclick="getCurrentLocation()">My Location</button>
-
-    <a href="{% url 'logout' %}">
-        <button class="logout-btn">Logout</button>
-    </a>
+    <a href="{% url 'logout' %}"><button class="logout-btn">Logout</button></a>
 </div>
 
 <div id="searchResults" class="search-results"></div>
 <div id="map"></div>
-
 <div class="info-box">
     <b>User:</b> {{ request.user.username }}<br>
     <b>Role:</b> {{ request.user.designation.name }}
 </div>
 
 <script>
-    let map, drawnItems, drawControl, editablePolygon = null, selectedFieldId = null;
-    let allFields = [];
-    let currentLocationMarker = null;
+    let map, drawnItems, drawControl, editablePolygon = null, selectedFieldId = null, allFields = [], currentLocationMarker = null;
 
-    // =========================
-    // Django CSRF Token Helper
-    // =========================
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-
-    // =========================
-    // Base Layers
-    // =========================
-    var streetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap'
-    });
-    var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Esri World Imagery'
-    });
-    var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Esri Labels'
-    });
-
+    // Base Layers Setup
+    var streetLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' });
+    var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri World Imagery' });
+    var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { attribution: 'Esri Labels' });
     var satelliteWithLabels = L.layerGroup([satelliteLayer, labelsLayer]);
 
-    // =========================
-    // Initialize Map
-    // =========================
-    map = L.map('map', {
-        center: [16.254846, 79.916159],
-        zoom: 16,
-        layers: [satelliteWithLabels]
-    });
+    // Initialize Map Camera Focus Lens View
+    map = L.map('map', { center: [16.254846, 79.916159], zoom: 16, layers: [satelliteWithLabels] });
+    L.control.layers({ "Satellite": satelliteWithLabels, "Street": streetLayer }).addTo(map);
 
-    // =========================
-    // Layer Control
-    // =========================
-    var baseMaps = { "Satellite": satelliteWithLabels, "Street": streetLayer };
-    L.control.layers(baseMaps).addTo(map);
-
-    // =========================
-    // Polygon Layer
-    // =========================
     drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
-    // =========================
-    // Draw Control
-    // =========================
     drawControl = new L.Control.Draw({
         draw: { polygon: true, rectangle: false, marker: false, circle: false, circlemarker: false, polyline: false },
         edit: { featureGroup: drawnItems }
     });
+    {% if can_edit %} map.addControl(drawControl); {% endif %}
 
-    {% if can_edit %}
-    map.addControl(drawControl);
-    {% endif %}
-
-    // =========================
-    // Current Location
-    // =========================
+    // Get Current Device GPS Positions Location Frame
     function getCurrentLocation() {
-        if (!navigator.geolocation) {
-            alert("Geolocation not supported");
-            return;
-        }
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                let lat = position.coords.latitude;
-                let lng = position.coords.longitude;
-                map.setView([lat, lng], 18);
-
-                if (currentLocationMarker) {
-                    map.removeLayer(currentLocationMarker);
-                }
-
-                currentLocationMarker = L.marker([lat, lng])
-                    .addTo(map)
-                    .bindPopup("<b>Current Location</b>");
-            },
-            function(error) { console.log(error); }
-        );
+        if (!navigator.geolocation) { alert("Geolocation not supported"); return; }
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let lat = position.coords.latitude, lng = position.coords.longitude;
+            map.setView([lat, lng], 18);
+            if (currentLocationMarker) { map.removeLayer(currentLocationMarker); }
+            currentLocationMarker = L.marker([lat, lng]).addTo(map).bindPopup("<b>Current Location</b>");
+        }, function(error) { console.log(error); });
     }
 
-    // =========================
-    // Draw Existing Polygon
-    // =========================
+    // Render Database Boundary Polygon Objects Outline on Map Layout UI
     function drawPolygon(field) {
         let polygon = L.polygon(field.coordinates, { weight: 2 });
         polygon.fieldId = field.field_id;
         polygon.fieldName = field.field_name;
-
         polygon.bindTooltip(field.field_name, { permanent: true, direction: "center" });
-        polygon.bindPopup("<b>" + field.field_name + "</b>");
 
+        let popupContent = `<b>${field.field_name}</b><br><br>
+            <a href="/maps/field/${field.field_id}/blocks/" style="text-decoration:none;">
+                <button style="padding:8px 12px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%;">View Blocks Layout</button>
+            </a>`;
+        polygon.bindPopup(popupContent);
         drawnItems.addLayer(polygon);
         return polygon;
     }
 
-    // =========================
-    // Load All Fields
-    // =========================
+    // Fetch All Field Polygons from Database Storage System Server API Core
     async function loadAllFields() {
         try {
             const response = await fetch("/maps/get-fields/");
             const result = await response.json();
-
             if (!result.success) return;
 
             allFields = result.data;
             let dropdown = document.getElementById("fieldDropdown");
             dropdown.innerHTML = '<option value="">Select Field</option>';
 
-            result.data.forEach(function(field){
+            result.data.forEach(field => {
                 let option = document.createElement("option");
                 option.value = field.field_id;
                 option.text = field.field_name;
@@ -222,24 +122,14 @@
             });
 
             drawnItems.clearLayers();
-            result.data.forEach(function(field) {
-                drawPolygon(field);
-            });
-        } catch(error) {
-            console.log(error);
-        }
+            result.data.forEach(field => drawPolygon(field));
+        } catch(error) { console.log(error); }
     }
 
-    // =========================
-    // Search Field
-    // =========================
+    // Live Query Boundary System Database Data Search Handler
     async function searchField() {
         let searchValue = document.getElementById("searchField").value.trim();
-
-        if (!searchValue) {
-            document.getElementById("searchResults").style.display = "none";
-            return;
-        }
+        if (!searchValue) { document.getElementById("searchResults").style.display = "none"; return; }
 
         try {
             const response = await fetch("/maps/search-field/?field_name=" + encodeURIComponent(searchValue));
@@ -248,36 +138,111 @@
             searchResultsDiv.innerHTML = "";
 
             if (!result.success || result.data.length === 0) {
-                searchResultsDiv.innerHTML = `<div class="search-item">No Fields Found</div>`;
+                searchResultsDiv.innerHTML = '<div class="search-item">No Fields Found</div>';
                 searchResultsDiv.style.display = "block";
                 return;
             }
 
-            result.data.forEach(function(field) {
+            result.data.forEach(field => {
                 let div = document.createElement("div");
                 div.className = "search-item";
                 div.innerHTML = "<b>" + field.field_name + "</b>";
-                div.onclick = function() {
-                    zoomToField(field);
-                    searchResultsDiv.style.display = "none";
-                };
+                div.onclick = function() { zoomToField(field); searchResultsDiv.style.display = "none"; };
                 searchResultsDiv.appendChild(div);
             });
             searchResultsDiv.style.display = "block";
-
-        } catch(error) {
-            console.log(error);
-        }
+        } catch(error) { console.log(error); }
     }
 
-    // =========================
-    // Event Listeners
-    // =========================
-    document.getElementById("searchField").addEventListener("keyup", function() { searchField(); });
+    document.getElementById("searchField").addEventListener("keyup", searchField);
 
-    map.on("click", function() {
-        document.getElementById("searchResults").style.display = "none";
+    // Zoom Lens Focus Straight Onto Target Selection Poly Boundary Object Frame
+    function zoomToField(field) {
+        drawnItems.clearLayers();
+        let polygon = L.polygon(field.coordinates, { color: "red", weight: 3 });
+        polygon.fieldId = field.field_id;
+        polygon.fieldName = field.field_name;
+
+        let popupContent = `<b>${field.field_name}</b><br><br>
+            <a href="/maps/field/${field.field_id}/blocks/" style="text-decoration:none;">
+                <button style="padding:8px 12px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold; width:100%;">View Blocks Layout</button>
+            </a>`;
+        polygon.bindPopup(popupContent);
+        polygon.addTo(drawnItems);
+        map.fitBounds(polygon.getBounds());
+        polygon.openPopup();
+
+        selectedFieldId = field.field_id;
+        editablePolygon = polygon;
+    }
+
+    map.on("click", () => document.getElementById("searchResults").style.display = "none");
+    function reloadFields() { selectedFieldId = null; editablePolygon = null; loadAllFields(); }
+
+    // Save New Field Boundary Geometry Polygon Structure 
+    {% if can_edit %}
+    map.on(L.Draw.Event.CREATED, async function(event) {
+        let layer = event.layer, fieldName = prompt("Enter Field Name");
+        if (!fieldName) { alert("Field Name is required"); return; }
+
+        let coordinates = [];
+        layer.getLatLngs()[0].forEach(point => coordinates.push([point.lat, point.lng]));
+
+        try {
+            const response = await fetch("/maps/save-field/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({ field_name: fieldName, coordinates: coordinates })
+            });
+            const result = await response.json();
+            if (result.success) { alert("Field Saved Successfully"); loadAllFields(); }
+            else { alert(result.message); }
+        } catch(error) { console.log(error); alert("Unable to save field"); }
     });
+    {% endif %}
+
+    function enableDrawing() { alert("Draw the field boundary on the map"); }
+
+    // Handle Editing Modifications and Core Geometric Adjustments Updates
+    {% if can_edit %}
+    function enableEditing() {
+        if (!editablePolygon) { alert("Search and select a field first"); return; }
+        alert("You can now drag polygon points and update the field");
+    }
+
+    map.on(L.Draw.Event.EDITED, async function(event) {
+        event.layers.eachLayer(async function(layer) {
+            if (!layer.fieldId) return;
+            let coordinates = [];
+            layer.getLatLngs()[0].forEach(point => coordinates.push([point.lat, point.lng]));
+
+            try {
+                const response = await fetch("/maps/update-field/" + layer.fieldId + "/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                    body: JSON.stringify({ field_name: layer.fieldName, coordinates: coordinates })
+                });
+                const result = await response.json();
+                if (result.success) { alert("Field Updated Successfully"); loadAllFields(); }
+                else { alert(result.message); }
+            } catch(error) { console.log(error); alert("Unable to update field"); }
+        });
+    });
+    {% endif %}
+
+    // Mouse Interaction Click Logic Event Handlers
+    drawnItems.on("click", function(event) {
+        let layer = event.layer;
+        selectedFieldId = layer.fieldId;
+        editablePolygon = layer;
+        map.fitBounds(layer.getBounds());
+        layer.openPopup();
+        
+        drawnItems.eachLayer(polygon => polygon.setStyle({ color: "#3388ff", weight: 2 }));
+        layer.setStyle({ color: "red", weight: 4 });
+    });
+
+    function refreshFields() { selectedFieldId = null; editablePolygon = null; drawnItems.clearLayers(); loadAllFields(); }
 
     document.addEventListener("keydown", function(event) {
         if (event.key === "Escape") {
@@ -287,168 +252,15 @@
         }
     });
 
-    document.getElementById("fieldDropdown").addEventListener("change", function(){
-        let fieldId = this.value;
-        if(!fieldId) return;
-        let field = allFields.find(f => f.field_id == fieldId);
-        if(field) { zoomToField(field); }
+    drawnItems.on("dblclick", event => map.fitBounds(event.layer.getBounds()));
+
+    document.getElementById("fieldDropdown").addEventListener("change", function() {
+        if (!this.value) return;
+        let field = allFields.find(f => f.field_id == this.value);
+        if (field) zoomToField(field);
     });
 
-    drawnItems.on("click", function(event) {
-        let layer = event.layer;
-        selectedFieldId = layer.fieldId;
-        editablePolygon = layer;
-        map.fitBounds(layer.getBounds());
-        layer.openPopup();
-        highlightPolygon(layer);
-    });
-
-    drawnItems.on("dblclick", function(event) {
-        map.fitBounds(event.layer.getBounds());
-    });
-
-    // =========================
-    // Highlight & Zoom
-    // =========================
-    function zoomToField(field) {
-        drawnItems.clearLayers();
-        let polygon = L.polygon(field.coordinates, { color: "red", weight: 3 });
-        polygon.fieldId = field.field_id;
-        polygon.fieldName = field.field_name;
-        polygon.bindPopup("<b>" + field.field_name + "</b>");
-        polygon.addTo(drawnItems);
-        map.fitBounds(polygon.getBounds());
-        polygon.openPopup();
-        selectedFieldId = field.field_id;
-        editablePolygon = polygon;
-    }
-
-    function highlightPolygon(layer) {
-        drawnItems.eachLayer(function(polygon) {
-            polygon.setStyle({ color: "#3388ff", weight: 2 });
-        });
-        layer.setStyle({ color: "red", weight: 4 });
-    }
-
-    // =========================
-    // Refresh All Fields
-    // =========================
-    function refreshFields() {
-        selectedFieldId = null;
-        editablePolygon = null;
-        drawnItems.clearLayers();
-        loadAllFields();
-    }
-
-    // =========================
-    // Creation & Editing Logic
-    // =========================
-    {% if can_edit %}
-    function enableDrawing() {
-        // Activate Leaflet Draw polygon tool
-        new L.Draw.Polygon(map, drawControl.options.draw.polygon).enable();
-    }
-
-    function enableEditing() {
-        if (!editablePolygon) {
-            alert("Search and select a field first");
-            return;
-        }
-        alert("You can now drag polygon points and update the field");
-        // Leaflet.draw handles the actual point editing via the UI, 
-        // but you can programmatically enable edit mode on the specific layer here if preferred.
-    }
-
-    map.on(L.Draw.Event.CREATED, async function(event) {
-        let layer = event.layer;
-        let fieldName = prompt("Enter Field Name");
-
-        if (!fieldName) {
-            alert("Field Name is required");
-            return;
-        }
-
-        let coordinates = [];
-        let latlngs = layer.getLatLngs()[0];
-        latlngs.forEach(function(point) {
-            coordinates.push([point.lat, point.lng]);
-        });
-
-        try {
-            const response = await fetch("/maps/save-field/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken // Injected CSRF token
-                },
-                body: JSON.stringify({
-                    field_name: fieldName,
-                    coordinates: coordinates
-                })
-            });
-
-            const result = await response.json();
-            if (result.success) {
-                alert("Field Saved Successfully");
-                loadAllFields();
-            } else {
-                alert(result.message);
-            }
-        } catch(error) {
-            console.log(error);
-            alert("Unable to save field");
-        }
-    });
-
-    map.on(L.Draw.Event.EDITED, async function(event) {
-        let layers = event.layers;
-        layers.eachLayer(async function(layer) {
-            if (!layer.fieldId) return;
-
-            let coordinates = [];
-            let latlngs = layer.getLatLngs()[0];
-            latlngs.forEach(function(point) {
-                coordinates.push([point.lat, point.lng]);
-            });
-
-            try {
-                const response = await fetch("/maps/update-field/" + layer.fieldId + "/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrftoken // Injected CSRF token
-                    },
-                    body: JSON.stringify({
-                        field_name: layer.fieldName,
-                        coordinates: coordinates
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert("Field Updated Successfully");
-                    loadAllFields();
-                } else {
-                    alert(result.message);
-                }
-            } catch(error) {
-                console.log(error);
-                alert("Unable to update field");
-            }
-        });
-    });
-    {% endif %}
-
-    // =========================
-    // Window Onload Event
-    // =========================
-    window.onload = function() {
-        // Consolidated initial loading to prevent redundant network requests
-        loadAllFields();
-        getCurrentLocation();
-    };
-
+    window.onload = function() { loadAllFields(); getCurrentLocation(); };
 </script>
-
 </body>
 </html>
