@@ -4,6 +4,9 @@ from Users.models import Details
 class Field(models.Model):
     field_name = models.CharField(max_length=100, unique=True)
     coordinates = models.JSONField()
+    work_type = models.CharField(max_length=50, default="Ploughing", blank=True, null=True)
+    crop_type = models.CharField(max_length=50, default="Rice", blank=True, null=True)
+    acres = models.FloatField(blank=True, null=True)
     created_by = models.ForeignKey(Details, on_delete=models.SET_NULL, null=True, related_name="fields_created")
     updated_by = models.ForeignKey(Details, on_delete=models.SET_NULL, null=True, blank=True, related_name="fields_updated")
     created_at = models.DateTimeField(auto_now_add=True)

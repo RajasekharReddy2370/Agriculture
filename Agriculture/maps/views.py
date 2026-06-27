@@ -132,3 +132,27 @@ def save_block(request, field_id):
         return JsonResponse({"success": True, "block_id": block.id})
     except Exception as e:
         return JsonResponse({"success": False, "message": str(e)}, status=400)
+    
+
+def update_details(request, field_id):
+    if request.method == "POST":
+        try:
+            # Look up the field using its database ID
+            field = get_object_or_404(Field, id=field_id)
+            data = json.loads(request.body)
+            
+            # Extract and update data from the sidebar inputs
+            field.work_type = data.get('work_type', 'Ploughing')
+            field.crop_type = data.get('crop_type', 'Rice')
+            
+            # Handle empty land string elegantly
+            acres_value = data.get('acres', '').strip()
+            field.acres = float(acres_value) if acres_value else None
+            
+            field.save()
+            return JsonResponse({"success": True})
+            
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+            
+    return JsonResponse({"success": False, "message": "Invalid request method."})

@@ -9,4 +9,5 @@ urlpatterns = [
     path("field/<int:field_id>/blocks/", views.blocks_dashboard, name="blocks_dashboard"),
     path("field/<int:field_id>/get-blocks/", views.get_blocks, name="get_blocks"),
     path("field/<int:field_id>/save-block/", views.save_block, name="save_block"),
+    path("field/<int:field_id>/update-details/", views.update_details, name="update_details"),
 ]

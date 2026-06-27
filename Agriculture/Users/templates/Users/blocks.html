@@ -2,92 +2,166 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Block Layout - {{ field.field_name }}</title>
+    <title>Field Management - {{ field.field_name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Leaflet & Leaflet Draw -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
     <style>
         *{ margin:0; padding:0; box-sizing:border-box; }
-        body{ font-family:Arial, sans-serif; overflow:hidden; }
-        #map{ width:100%; height:100vh; }
+        body{ font-family:Arial, sans-serif; overflow:hidden; display: flex; width: 100vw; height: 100vh; }
         
-        .top-panel {
-            position:absolute; top:15px; left:70px; z-index:1000;
-            background:white; padding:12px 20px; border-radius:15px;
-            box-shadow:0 0 15px rgba(0,0,0,0.3);
-            display: flex; align-items: center; gap: 15px;
-        }
-        .top-panel h3 { color:#333; font-size: 16px; }
-        .btn { padding:8px 15px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; text-decoration:none; font-size: 14px; }
-        .back-btn { background:#6c757d; color:white; }
-        .back-btn:hover { background:#5a6268; }
+        /* Split Screen Workspace Settings (20% Left / 80% Right Map) */
+        .sidebar { width: 20%; height: 100vh; background: #ffffff; border-right: 2px solid #e0e0e0; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .map-container { width: 80%; height: 100vh; position: relative; }
+        #map { width: 100%; height: 100%; }
+
+        /* Component Containers layout from Screenshot 2026-06-27 at 11.58.57 PM.png */
+        .field-title { font-size: 20px; color: #333; font-weight: bold; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .data-card { background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #28a745; }
+        .data-card label { display: block; font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        
+        /* Interactive Form Fields Custom Styling */
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; font-weight: bold; color: #333; outline: none; background: #ffffff; margin-top: 5px; }
+        .form-control:disabled { background: #f1f3f5; color: #555; cursor: not-allowed; border-color: #e2e8f0; }
+        
+        .btn { display: block; text-align: center; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 14px; transition: 0.2s; width: 100%; }
+        .update-btn { background: #007bff; color: white; margin-top: 10px; }
+        .update-btn:hover { background: #0069d9; }
+        .save-btn { background: #28a745; color: white; margin-top: 10px; }
+        .save-btn:hover { background: #218838; }
+        .back-btn { background: #6c757d; color: white; margin-top: auto; }
+        .back-btn:hover { background: #5a6268; }
     </style>
 </head>
 <body>
 
-<div class="top-panel">
-    <h3>Field: <b style="color: red;">{{ field.field_name }}</b> (Blocks Layout)</h3>
-    <a href="{% url 'dashboard' %}" class="btn back-btn">⬅ Back to Map</a>
+<!-- LEFT DATA CONTROL SIDEBAR PANEL (20% UI Framework Viewport) -->
+<div class="sidebar">
+    <div class="field-title">🌾 {{ field.field_name }}</div>
+    
+    <!-- 1. Current Working Type Selection Field Component (Disabled/Protected on Load) -->
+    <div class="data-card" style="border-left-color: #007bff;">
+        <label>Current Work Type</label>
+        <select id="workType" class="form-control" disabled>
+            <option value="ploughing" {% if field.work_type|lower == 'ploughing' %}selected{% endif %}>Ploughing</option>
+            <option value="watering" {% if field.work_type|lower == 'watering' %}selected{% endif %}>Watering</option>
+            <option value="seeding" {% if field.work_type|lower == 'seeding' %}selected{% endif %}>Seeding</option>
+            <option value="weeding" {% if field.work_type|lower == 'weeding' %}selected{% endif %}>Weeding</option>
+            <option value="pesticiding" {% if field.work_type|lower == 'pesticiding' %}selected{% endif %}>Pesticiding</option>
+            <option value="cutting" {% if field.work_type|lower == 'cutting' %}selected{% endif %}>Cutting</option>
+        </select>
+    </div>
+
+    <!-- 2. Active Crop Selection Field Component (Disabled/Protected on Load) -->
+    <div class="data-card" style="border-left-color: #ff9800;">
+        <label>Crop Type</label>
+        <select id="cropType" class="form-control" disabled>
+            <option value="rice" {% if field.crop_type|lower == 'rice' %}selected{% endif %}>Rice</option>
+            <option value="wheat" {% if field.crop_type|lower == 'wheat' %}selected{% endif %}>Wheat</option>
+            <option value="corn" {% if field.crop_type|lower == 'corn' %}selected{% endif %}>Corn</option>
+            <option value="paperwood" {% if field.crop_type|lower == 'paperwood' %}selected{% endif %}>Paperwood</option>
+            <option value="cotton" {% if field.crop_type|lower == 'cotton' %}selected{% endif %}>Cotton</option>
+        </select>
+    </div>
+
+    <!-- 3. Total Land Acreage Numerical Form Data Component (Disabled/Protected on Load) -->
+    <div class="data-card" style="border-left-color: #e91e63;">
+        <label>Total Land (Acres)</label>
+        <input type="text" id="totalLand" class="form-control" value="{{ field.acres|default:'' }}" placeholder="Enter land size (e.g., 12.5)" disabled>
+    </div>
+
+    <!-- ROLE CONDITIONAL GATE: Only lets Superusers, VCs, and Admins run modifications -->
+    {% if request.user.is_superuser or request.user.designation.name|lower == 'vc' or request.user.designation.name|lower == 'admin' %}
+        <!-- Standalone Update button loaded initially -->
+        <button id="updateBtn" class="btn update-btn" onclick="enableEditingMode()">Update</button>
+        <!-- Green Save button stays completely hidden until Update is activated -->
+        <button id="saveBtn" class="btn save-btn" onclick="saveSidebarData()" style="display: none;">Save Changes</button>
+    {% endif %}
+
+    <a href="{% url 'dashboard' %}" class="btn back-btn">⬅ Back to Main Map</a>
 </div>
 
-<div id="map"></div>
+<!-- RIGHT INTERACTIVE MAP GRAPHICS CONTAINER PANEL (80% Workspace Framework Width) -->
+<div class="map-container">
+    <div id="map"></div>
+</div>
 
 <script>
     let map, blockGroup, drawControl;
-    
-    // Get parameters from Django backend context
-    const fieldId = "{{ field.id }}"; // Clean field database reference identification
+    const fieldId = "{{ field.id }}"; 
     const parentFieldCoordinates = {{ field.coordinates|safe }};
 
-    // Initialize Map with matching Satellite Imagery
+    // Initialize Map Framework Layer Systems
     var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
     var labelsLayer = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}');
     var satelliteWithLabels = L.layerGroup([satelliteLayer, labelsLayer]);
 
-    map = L.map('map', {
-        zoomControl: true,
-        layers: [satelliteWithLabels]
-    });
+    map = L.map('map', { zoomControl: true, layers: [satelliteWithLabels] });
 
-    // 1. DRAW THE EXACT PARENT FIELD BOUNDARY (Red Dashed Line)
-    let parentPolygon = L.polygon(parentFieldCoordinates, {
-        color: "red",
-        weight: 3,
-        fillOpacity: 0.02,
-        dashArray: "6, 6"
-    }).addTo(map);
-
-    // 2. AUTOMATICALLY ZOOM AND FOCUS DIRECTLY ON IT
+    let parentPolygon = L.polygon(parentFieldCoordinates, { color: "red", weight: 3, fillOpacity: 0.02, dashArray: "6, 6" }).addTo(map);
     map.fitBounds(parentPolygon.getBounds());
 
-    // Group to hold your newly drawn blocks
     blockGroup = new L.FeatureGroup().addTo(map);
 
-    // 3. FORCE LEAFLET DRAW TOOLBAR TO SHOW ON THE LEFT SIDE
     drawControl = new L.Control.Draw({
         position: 'topleft',
         draw: {
-            polygon: {
-                allowIntersection: false, // Prevents overlapping messy shapes
-                shapeOptions: { color: '#ff9800', weight: 3, fillOpacity: 0.4 }
-            },
-            rectangle: true, // Allows quick square blocks too!
-            marker: false, circle: false, circlemarker: false, polyline: false
+            polygon: { allowIntersection: false, shapeOptions: { color: '#ff9800', weight: 3, fillOpacity: 0.4 } },
+            rectangle: true, marker: false, circle: false, circlemarker: false, polyline: false
         },
-        edit: {
-            featureGroup: blockGroup,
-            remove: true
-        }
+        edit: { featureGroup: blockGroup, remove: true }
     });
     map.addControl(drawControl);
 
-    // 4. LOAD EXISTING BLOCKS FROM DATABASE
+    // Dynamic UI Interface Toggle Flow: Activates Fields and switches Buttons
+    function enableEditingMode() {
+        document.getElementById('workType').disabled = false;
+        document.getElementById('cropType').disabled = false;
+        document.getElementById('totalLand').disabled = false;
+        document.getElementById('updateBtn').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'block';
+    }
+
+    // Dynamic UI Interface Toggle Flow: Safely relocks components into read-only
+    function disableEditingMode() {
+        document.getElementById('workType').disabled = true;
+        document.getElementById('cropType').disabled = true;
+        document.getElementById('totalLand').disabled = true;
+        document.getElementById('updateBtn').style.display = 'block';
+        document.getElementById('saveBtn').style.display = 'none';
+    }
+
+    // Transmit Sidebar Adjustment Parameters Payload to Server Repository Core Endpoint 
+    async function saveSidebarData() {
+        const data = {
+            work_type: document.getElementById('workType').value,
+            crop_type: document.getElementById('cropType').value,
+            acres: document.getElementById('totalLand').value
+        };
+
+        try {
+            const response = await fetch(`/maps/field/${fieldId}/update-details/`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if(result.success) { 
+                alert("Field settings updated successfully!"); 
+                disableEditingMode(); // Lock form fields down instantly on success save
+            } else { 
+                alert("Error: " + result.message); 
+            }
+        } catch(e) { console.error(e); alert("Failed to save sidebar data."); }
+    }
+
+    // Async Fetch Core System Data Block Outline Loops Layout
     async function loadBlocks() {
         try {
             const response = await fetch(`/maps/field/${fieldId}/get-blocks/`);
@@ -96,60 +170,35 @@
 
             blockGroup.clearLayers();
             result.data.forEach(block => {
-                let poly = L.polygon(block.coordinates, { 
-                    color: "#ff9800", 
-                    weight: 2, 
-                    fillOpacity: 0.35 
-                });
+                let poly = L.polygon(block.coordinates, { color: "#ff9800", weight: 2, fillOpacity: 0.35 });
                 poly.bindPopup(`<b>Block Name: ${block.block_name}</b>`);
-                poly.bindTooltip(block.block_name, { permanent: true, direction: "center", className: "block-tooltip" });
+                poly.bindTooltip(block.block_name, { permanent: true, direction: "center" });
                 blockGroup.addLayer(poly);
             });
         } catch(e) { console.error("Error loading blocks:", e); }
     }
 
-    // 5. CAPTURE & SAVE NEWLY DRAWN BLOCK SHAPES
+    // Save New Drawn Block Boundaries Interface Flow Action Engine Controller
     map.on(L.Draw.Event.CREATED, async function(event) {
         let layer = event.layer;
-        
-        // Prompt for the block identifier name
-        let blockName = prompt("Enter a Name/ID for this Block (e.g., Block A, Row 1):");
-        if (!blockName || blockName.trim() === "") {
-            return; // Cancelled
-        }
+        let blockName = prompt("Enter a Name/ID for this Block:");
+        if (!blockName || blockName.trim() === "") return;
 
-        // Extract drawn polygon map positions
         let coordinates = [];
-        let latlngs = layer.getLatLngs()[0];
-        latlngs.forEach(pt => coordinates.push([pt.lat, pt.lng]));
+        layer.getLatLngs()[0].forEach(pt => coordinates.push([pt.lat, pt.lng]));
 
         try {
             const response = await fetch(`/maps/field/${fieldId}/save-block/`, {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": "{{ csrf_token }}" // Native security pass token
-                },
-                body: JSON.stringify({ 
-                    block_name: blockName, 
-                    coordinates: coordinates 
-                })
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({ block_name: blockName, coordinates: coordinates })
             });
-            
             const res = await response.json();
-            if(res.success) {
-                alert(`Saved "${blockName}" inside your field boundary successfully!`);
-                loadBlocks(); // Reload screen layouts
-            } else {
-                alert("Error: " + res.message);
-            }
-        } catch(e) { 
-            console.error(e);
-            alert("Failed to connect to server.");
-        }
+            if(res.success) { alert(`Saved "${blockName}" successfully!`); loadBlocks(); }
+            else { alert("Error: " + res.message); }
+        } catch(e) { console.error(e); alert("Failed to connect to server."); }
     });
 
-    // Run layout scan on window startup
     window.onload = loadBlocks;
 </script>
 </body>
