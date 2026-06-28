@@ -73,6 +73,18 @@ def update_field(request, field_id):
         return JsonResponse({"success": False, "message": "Field not found"}, status=404)
     except Exception as e:
         return JsonResponse({"success": False, "message": str(e)}, status=400)
+    
+def get_field_details(request, field_id):
+    field = Field.objects.get(id=field_id)
+    return JsonResponse({
+        'success': True,
+        'data': {
+            'field_id': field.id,
+            'field_name': field.field_name,
+            'work_type': field.work_type,
+            'crop_type': field.crop_type
+        }
+    })
 
 def search_field(request):
     if not request.user.is_authenticated:
