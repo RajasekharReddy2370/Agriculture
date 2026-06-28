@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Map Engine Attachments -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
@@ -33,7 +34,7 @@
         
         .clean-field-label { background: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; border-radius: 4px; font-weight: bold; padding: 2px 6px; font-size: 12px; color: #333; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
-        /* Dynamic Panel Beside Mouse Click */
+        /* Dynamic Popup Panel */
         .right-panel {
             position: absolute;
             width: 260px;
@@ -54,12 +55,19 @@
 
 <div class="top-panel">
     <input type="text" id="searchField" placeholder="Search Field Name">
-    <select id="fieldDropdown"><option value="">Select Field</option></select>
+    
+    <!-- FIXED: Added onchange listener to activate dropdown tracking selection -->
+    <select id="fieldDropdown" onchange="selectFieldDropdown(this.value)">
+        <option value="">Select Field</option>
+    </select>
+    
     <button class="search-btn" onclick="searchField()">Search</button>
-    {% if can_edit %}
+    
+    {% if request.user.is_superuser or request.user.designation.name|lower == 'vc' or request.user.designation.name|lower == 'admin' %}
     <button class="create-btn" onclick="enableDrawing()">Mark New Field</button>
     <button class="update-btn" onclick="enableEditing()">Update Field</button>
     {% endif %}
+    
     <button class="location-btn" onclick="getCurrentLocation()">My Location</button>
     <a href="{% url 'logout' %}"><button class="logout-btn">Logout</button></a>
 </div>
@@ -85,9 +93,8 @@
 </div>
 
 <script>
-    let map, drawnItems, allFields = [];
+    let map, drawnItems, drawControl, allFields = [];
     
-    // Complete Set of Work Icons Matching Your Sidebar Selection Elements
     const workIcons = {
         ploughing: 'https://cdn-icons-png.flaticon.com/512/2316/2316040.png',
         watering: 'https://cdn-icons-png.flaticon.com/512/3105/3105803.png',
@@ -102,6 +109,25 @@
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
     drawnItems = new L.FeatureGroup().addTo(map);
 
+    // FIXED: Build & inject native Left Side Toolbar panel (Screenshot 2026-06-28 at 10.22.37 PM.png)
+    {% if request.user.is_superuser or request.user.designation.name|lower == 'vc' or request.user.designation.name|lower == 'admin' %}
+        drawControl = new L.Control.Draw({
+            draw: {
+                polygon: true,
+                rectangle: true,  // Adds the square box selection element seen in your screenshot
+                polyline: false,
+                circle: false,
+                marker: false,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: drawnItems,
+                remove: true
+            }
+        });
+        map.addControl(drawControl);
+    {% endif %}
+
     function drawPolygon(field) {
         let polygon = L.polygon(field.coordinates, { color: "#3388ff", weight: 2 }).addTo(drawnItems);
         polygon.fieldId = field.field_id;
@@ -114,7 +140,6 @@
         const panel = document.getElementById('fieldDetailsPanel');
         document.getElementById('panelFieldName').innerText = field.field_name;
         
-        // Formulate clear, human-readable states
         let workType = field.work_type ? field.work_type : 'Not Set';
         let cropType = field.crop_type ? field.crop_type : 'Not Set';
         
@@ -125,7 +150,12 @@
         document.getElementById('panelWorkIcon').src = workIcons[iconKey] || workIcons['default'];
         document.getElementById('panelLayoutBtn').href = `/maps/field/${field.field_id}/blocks/`;
 
-        // Smooth positioning right next to point of contact
+        // Safe placement computation fallback if coordinate context points are missing
+        if (!e.containerPoint && e.target) {
+            let center = e.target.getBounds().getCenter();
+            e.containerPoint = map.latLngToContainerPoint(center);
+        }
+
         panel.style.top = (e.containerPoint.y - 50) + 'px';
         panel.style.left = (e.containerPoint.x + 20) + 'px';
         panel.classList.add('active');
@@ -138,28 +168,26 @@
         L.DomEvent.stopPropagation(e);
         let layer = e.layer;
         
-        // Highlight active layout frame
         drawnItems.eachLayer(l => l.setStyle({ color: "#3388ff", weight: 2 }));
         layer.setStyle({ color: "red", weight: 4 });
 
         try {
-            // Actively retrieve live state records right from the DB system
             const response = await fetch(`/maps/get-field-details/${layer.fieldId}/`);
             const result = await response.json();
             if (result.success) {
-                layer.fieldData = result.data; // Sync local instance
+                layer.fieldData = result.data;
                 openRightPanel(result.data, e);
             } else {
                 openRightPanel(layer.fieldData, e);
             }
         } catch (err) {
-            console.error("Live sync failed, using initialization snapshot:", err);
             openRightPanel(layer.fieldData, e);
         }
     });
 
     map.on("click", () => closeRightPanel());
 
+    // FIXED: Population loop for dropdown menu selection 
     async function loadAllFields() {
         try {
             const res = await fetch("/maps/get-fields/");
@@ -167,10 +195,108 @@
             if (result.success) {
                 allFields = result.data;
                 drawnItems.clearLayers();
-                result.data.forEach(field => drawPolygon(field));
+                
+                let dropdown = document.getElementById("fieldDropdown");
+                dropdown.innerHTML = '<option value="">Select Field</option>'; // Clear structure
+                
+                result.data.forEach(field => {
+                    drawPolygon(field);
+                    
+                    // Creates options dynamically so they show up inside the dropdown selection frame
+                    let option = document.createElement("option");
+                    option.value = field.field_id;
+                    option.text = field.field_name;
+                    dropdown.appendChild(option);
+                });
             }
-        } catch (err) { console.error("Error initializing layers:", err); }
+        } catch (err) { console.error("Error building dashboard map data:", err); }
     }
+
+    // INTERFACE ACTION HELPERS
+    function enableDrawing() {
+        if(drawControl) {
+            let polyDrawer = new L.Draw.Polygon(map, drawControl.options.draw.polygon);
+            polyDrawer.enable();
+        }
+    }
+
+    function enableEditing() {
+        alert("To modify layouts, click the white square 'Edit layers' pen icon directly inside the map toolbar options.");
+    }
+
+    // Dropdown selection action tracker 
+    function selectFieldDropdown(id) {
+        if (!id) return;
+        let targetLayer = null;
+        drawnItems.eachLayer(layer => {
+            if (layer.fieldId == id) targetLayer = layer;
+        });
+        if (targetLayer) {
+            map.fitBounds(targetLayer.getBounds());
+            targetLayer.fire('click');
+        }
+    }
+
+    // Top Header Text Search Engine Handler
+    function searchField() {
+        let val = document.getElementById("searchField").value.toLowerCase().trim();
+        if (!val) return;
+        let targetLayer = null;
+        drawnItems.eachLayer(layer => {
+            if (layer.fieldData && layer.fieldData.field_name.toLowerCase().includes(val)) {
+                targetLayer = layer;
+            }
+        });
+        if (targetLayer) {
+            map.fitBounds(targetLayer.getBounds());
+            targetLayer.fire('click');
+        } else {
+            alert("Specified field layout boundary name not found.");
+        }
+    }
+
+    function getCurrentLocation() {
+        map.locate({setView: true, maxZoom: 16});
+    }
+
+    // NATIVE TOOLBAR DRAW DATA CAPTURE AND SUBMISSION ENGINE
+    {% if request.user.is_superuser or request.user.designation.name|lower == 'vc' or request.user.designation.name|lower == 'admin' %}
+    map.on(L.Draw.Event.CREATED, async function(event) {
+        let layer = event.layer;
+        let fieldName = prompt("Enter Field Name:");
+        if (!fieldName) return;
+
+        let coordinates = [];
+        let latLngs = layer.getLatLngs();
+        let points = Array.isArray(latLngs[0]) ? latLngs[0] : latLngs;
+        points.forEach(point => coordinates.push([point.lat, point.lng]));
+
+        const response = await fetch("/maps/save-field/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+            body: JSON.stringify({ field_name: fieldName, coordinates: coordinates })
+        });
+        const result = await response.json();
+        if (result.success) { alert("Field created successfully!"); loadAllFields(); }
+    });
+
+    map.on(L.Draw.Event.EDITED, async function(event) {
+        event.layers.eachLayer(async function(layer) {
+            let coordinates = [];
+            let latLngs = layer.getLatLngs();
+            let points = Array.isArray(latLngs[0]) ? latLngs[0] : latLngs;
+            points.forEach(point => coordinates.push([point.lat, point.lng]));
+
+            await fetch("/maps/update-field/" + layer.fieldId + "/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({ field_name: layer.fieldData.field_name, coordinates: coordinates })
+            });
+        });
+        alert("Field layout configurations updated successfully.");
+        loadAllFields();
+    });
+    {% endif %}
 
     window.onload = loadAllFields;
 </script>
