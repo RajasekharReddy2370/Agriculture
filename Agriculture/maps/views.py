@@ -24,6 +24,8 @@ def get_fields(request):
             "field_id": field.id,
             "field_name": field.field_name,
             "coordinates": field.coordinates,
+            "work_type": field.work_type,     # Added to fix the 'Not Set' issue
+            "crop_type": field.crop_type,     # Added to fix the 'Not Set' issue
             "created_by": field.created_by.username if field.created_by else None,
             "updated_by": field.updated_by.username if field.updated_by else None,
             "created_at": field.created_at,

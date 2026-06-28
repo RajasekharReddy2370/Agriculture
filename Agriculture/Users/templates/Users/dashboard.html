@@ -16,7 +16,7 @@
         body{ font-family:Arial, sans-serif; overflow:hidden; }
         #map{ width:100%; height:100vh; }
 
-        /* Interface UI */
+        /* Interface UI Panels */
         .top-panel{ position:absolute; top:15px; left:70px; z-index:1000; background:white; padding:15px; border-radius:15px; box-shadow:0 0 15px rgba(0,0,0,0.3); }
         .top-panel input, .top-panel select{ width:250px; padding:10px; border-radius:20px; border:1px solid #ccc; outline:none; }
         .top-panel button{ padding:10px 20px; border:none; border-radius:20px; cursor:pointer; font-weight:bold; margin-left:5px; }
@@ -46,7 +46,8 @@
             pointer-events: auto;
         }
         .right-panel.active { display: block; }
-        .close-panel { float: right; cursor: pointer; color: #888; }
+        .close-panel { float: right; cursor: pointer; color: #888; font-weight: bold; font-size: 16px; }
+        .close-panel:hover { color: #000; }
     </style>
 </head>
 <body>
@@ -69,26 +70,31 @@
 <!-- DYNAMIC POPUP PANEL -->
 <div id="fieldDetailsPanel" class="right-panel">
     <span class="close-panel" onclick="closeRightPanel()">✖</span>
-    <h3 id="panelFieldName" style="margin-bottom:15px; font-size:16px;">Field Name</h3>
+    <h3 id="panelFieldName" style="margin-bottom:15px; font-size:16px; text-transform: capitalize;">Field Name</h3>
     <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
         <div style="text-align:center;">
-            <img id="panelWorkIcon" src="" style="width:30px; height:30px;"><br>
-            <span id="panelWorkText" style="font-size: 12px; color: #007bff; font-weight: bold;"></span>
+            <img id="panelWorkIcon" src="" style="width:30px; height:30px; object-fit: contain;"><br>
+            <span id="panelWorkText" style="font-size: 12px; color: #007bff; font-weight: bold; text-transform: capitalize;"></span>
         </div>
         <div style="text-align:center;">
-            <span style="font-size: 24px;">🌱</span><br>
-            <span id="panelCropText" style="font-size: 12px; color: #ff9800; font-weight: bold;"></span>
+            <span style="font-size: 24px; display: inline-block; margin-bottom: 4px;">🌱</span><br>
+            <span id="panelCropText" style="font-size: 12px; color: #ff9800; font-weight: bold; text-transform: capitalize;"></span>
         </div>
     </div>
-    <a id="panelLayoutBtn" href="#"><button style="width:100%; padding:10px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer;">View Blocks Layout</button></a>
+    <a id="panelLayoutBtn" href="#"><button style="width:100%; padding:10px; background:#007bff; color:white; border:none; border-radius:6px; cursor:pointer; font-weight: bold;">View Blocks Layout</button></a>
 </div>
 
 <script>
     let map, drawnItems, allFields = [];
+    
+    // Complete Set of Work Icons Matching Your Sidebar Selection Elements
     const workIcons = {
         ploughing: 'https://cdn-icons-png.flaticon.com/512/2316/2316040.png',
         watering: 'https://cdn-icons-png.flaticon.com/512/3105/3105803.png',
         seeding: 'https://cdn-icons-png.flaticon.com/512/4204/4204128.png',
+        weeding: 'https://cdn-icons-png.flaticon.com/512/2590/2590467.png',
+        pesticiding: 'https://cdn-icons-png.flaticon.com/512/2928/2928883.png',
+        cutting: 'https://cdn-icons-png.flaticon.com/512/2674/2674254.png',
         default: 'https://cdn-icons-png.flaticon.com/512/2316/2316040.png'
     };
 
@@ -98,6 +104,7 @@
 
     function drawPolygon(field) {
         let polygon = L.polygon(field.coordinates, { color: "#3388ff", weight: 2 }).addTo(drawnItems);
+        polygon.fieldId = field.field_id;
         polygon.fieldData = field;
         polygon.bindTooltip(field.field_name, { permanent: true, direction: "center", className: "clean-field-label" });
         return polygon;
@@ -106,14 +113,19 @@
     function openRightPanel(field, e) {
         const panel = document.getElementById('fieldDetailsPanel');
         document.getElementById('panelFieldName').innerText = field.field_name;
-        document.getElementById('panelWorkText').innerText = field.work_type || 'Not Set';
-        document.getElementById('panelCropText').innerText = field.crop_type || 'Not Set';
+        
+        // Formulate clear, human-readable states
+        let workType = field.work_type ? field.work_type : 'Not Set';
+        let cropType = field.crop_type ? field.crop_type : 'Not Set';
+        
+        document.getElementById('panelWorkText').innerText = workType;
+        document.getElementById('panelCropText').innerText = cropType;
         
         let iconKey = field.work_type ? field.work_type.toLowerCase() : 'default';
         document.getElementById('panelWorkIcon').src = workIcons[iconKey] || workIcons['default'];
         document.getElementById('panelLayoutBtn').href = `/maps/field/${field.field_id}/blocks/`;
 
-        // Position beside the mouse click
+        // Smooth positioning right next to point of contact
         panel.style.top = (e.containerPoint.y - 50) + 'px';
         panel.style.left = (e.containerPoint.x + 20) + 'px';
         panel.classList.add('active');
@@ -121,19 +133,43 @@
 
     function closeRightPanel() { document.getElementById('fieldDetailsPanel').classList.remove('active'); }
 
-    drawnItems.on("click", function(e) {
+    // REAL-TIME SYNCHRONIZED CLICK LISTENER
+    drawnItems.on("click", async function(e) {
         L.DomEvent.stopPropagation(e);
-        drawnItems.eachLayer(l => l.setStyle({ color: "#3388ff" }));
-        e.layer.setStyle({ color: "red" });
-        openRightPanel(e.layer.fieldData, e);
+        let layer = e.layer;
+        
+        // Highlight active layout frame
+        drawnItems.eachLayer(l => l.setStyle({ color: "#3388ff", weight: 2 }));
+        layer.setStyle({ color: "red", weight: 4 });
+
+        try {
+            // Actively retrieve live state records right from the DB system
+            const response = await fetch(`/maps/get-field-details/${layer.fieldId}/`);
+            const result = await response.json();
+            if (result.success) {
+                layer.fieldData = result.data; // Sync local instance
+                openRightPanel(result.data, e);
+            } else {
+                openRightPanel(layer.fieldData, e);
+            }
+        } catch (err) {
+            console.error("Live sync failed, using initialization snapshot:", err);
+            openRightPanel(layer.fieldData, e);
+        }
     });
 
     map.on("click", () => closeRightPanel());
 
     async function loadAllFields() {
-        const res = await fetch("/maps/get-fields/");
-        const result = await res.json();
-        result.data.forEach(field => drawPolygon(field));
+        try {
+            const res = await fetch("/maps/get-fields/");
+            const result = await res.json();
+            if (result.success) {
+                allFields = result.data;
+                drawnItems.clearLayers();
+                result.data.forEach(field => drawPolygon(field));
+            }
+        } catch (err) { console.error("Error initializing layers:", err); }
     }
 
     window.onload = loadAllFields;
